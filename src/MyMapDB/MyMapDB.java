@@ -43,7 +43,7 @@ public class MyMapDB implements Serializable {
 
     public void productInsert(String name) {
         int newRecordId = productTypeTable.size() + 1;
-        Product newProduct = new Product(name);
+        Product newProduct = new Product(newRecordId,name);
         productTypeTable.put(newRecordId, newProduct);
     }
 
@@ -58,7 +58,7 @@ public class MyMapDB implements Serializable {
             item.setQuantity(quantity);
             item.setProductTypeId(productTypeId);
         } else {
-            VendingMachineItem newItem = new VendingMachineItem(productTypeId, price, quantity);
+            VendingMachineItem newItem = new VendingMachineItem(recordId, productTypeId, price, quantity);
             vendingMachineItemTable.put(recordId, newItem);
         }
     }
@@ -78,7 +78,7 @@ public class MyMapDB implements Serializable {
 
     public void purchasedProductInsert(Integer productTypeId, Integer quantity, Integer userId) {
         int newRecordId = purchasedProductTable.size() + 1;
-        PurchasedProduct newPurchasedProduct = new PurchasedProduct(productTypeId, quantity, userId);
+        PurchasedProduct newPurchasedProduct = new PurchasedProduct(newRecordId, productTypeId, quantity, userId);
         purchasedProductTable.put(newRecordId, newPurchasedProduct);
     }
 
