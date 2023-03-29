@@ -1,6 +1,9 @@
 package MyMapDB;
 
-public class VendingMachineItem {
+import java.io.Serializable;
+
+public class VendingMachineItem implements Serializable {
+    static final long SerialVersionUID = 51238620001707L;
     private int productTypeId, price, quantity;
 
     public VendingMachineItem(int productTypeId, int price, int quantity) {

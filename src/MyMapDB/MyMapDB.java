@@ -1,10 +1,12 @@
 package MyMapDB;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MyMapDB {
+public class MyMapDB implements Serializable {
+    static final long SerialVersionUID = -48629262342433707L;
     private HashMap<Integer, User> userTable = new HashMap<Integer, User>();
     private HashMap<Integer, Product> productTypeTable = new HashMap<Integer, Product>();
     private HashMap<Integer, VendingMachineItem> vendingMachineItemTable = new HashMap<Integer, VendingMachineItem>();

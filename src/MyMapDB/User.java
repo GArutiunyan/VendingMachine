@@ -1,6 +1,9 @@
 package MyMapDB;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+    static final long SerialVersionUID = 4862342411707L;
     private int userId, money;
     private String userName, password;
 
