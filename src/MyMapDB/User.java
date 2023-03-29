@@ -5,16 +5,17 @@ public class User {
     private String userName, password;
 
     private UserType userType;
+
     public enum UserType {
         CUSTOMER, OPERATOR
     }
 
-    public User(int userId, String userName, String password, int money) {
+    public User(int userId, String userName, String password, int money, UserType userType) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.money = money;
-        this.userType = UserType.CUSTOMER;
+        this.userType = userType;
     }
 
 
@@ -36,5 +37,9 @@ public class User {
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    public UserType getUserType() {
+        return userType;
     }
 }

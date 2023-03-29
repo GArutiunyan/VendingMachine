@@ -24,7 +24,7 @@ public class MyMapDB {
 
     public void userInsert(String userName, String password, int money) {
         int newRecordId = userTable.size() + 1;
-        User newUser = new User(newRecordId, userName, password, money);
+        User newUser = new User(newRecordId, userName, password, money, User.UserType.CUSTOMER);
         userTable.put(newRecordId, newUser);
     }
 
