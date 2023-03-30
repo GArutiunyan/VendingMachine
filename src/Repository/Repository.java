@@ -7,10 +7,11 @@ import java.util.List;
 
 public class Repository {
 
-    public static void userInsert(String userName, String password, int money) {
+    public static User userInsert(String username, String password, int money) {
         int newRecordId = MyMapDB.userTable.size() + 1;
-        User newUser = new User(newRecordId, userName, password, money, User.UserType.CUSTOMER);
+        User newUser = new User(newRecordId, username, password, money, User.UserType.CUSTOMER);
         MyMapDB.userTable.put(newRecordId, newUser);
+        return newUser;
     }
 
     public static User userSelectById(Integer userId) {

@@ -20,10 +20,16 @@ public class UserService {
         }
         if(user.getPassword().equals(password)){
             currentUser = user;
+            loginStatus = true;
             return LoginAttemptResult.SUCCESS;
         }
         return LoginAttemptResult.WRONG_PASSWORD;
     }
+
+    public static void registerNewUser(String username, String password, int money){
+        currentUser = Repository.userInsert(username,password,money);
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }
