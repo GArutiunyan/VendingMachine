@@ -3,6 +3,8 @@ import MyMapDB.*;
 
 import Repository.*;
 
+import java.io.File;
+
 public class Service {
     public static void buy(VendingMachineItem vendingMachineItem, int quantity){
         User user = UserService.currentUser;
@@ -20,6 +22,14 @@ public class Service {
 
     public static void addNewProductType(String name){
         Repository.productInsert(name);
+    }
+
+    public static void fillMyMapDB(){
+        if(new File("Vending_Machine_data.dat").isFile()){
+            Repository.loadMyMapDBFromFile();
+        }else{
+            Repository.loadMyMapDBDefaultValues();
+        }
     }
 
 }

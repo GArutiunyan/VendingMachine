@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Repository {
 
@@ -71,9 +72,28 @@ public class Repository {
         }
     }
 
+    public static void loadMyMapDBDefaultValues(){
+        userInsert("admin","admin",1000000000);
+        userInsert("Gena","12345",50000);
+        productInsert("Sparkling water");
+        productInsert("Sandwich");
+        productInsert("Doritos");
+        productInsert("Twix");
+        productInsert("Haribo gummy bears");
+        productInsert("Tuc");
+        productInsert("IPhone 15");
+        vendingMachineItemInsert(1,1,100,10);
+        vendingMachineItemInsert(3,2,150,10);
+        vendingMachineItemInsert(1,3,200,4);
+        vendingMachineItemInsert(1,4,100,10);
+        vendingMachineItemInsert(1,5,180,8);
+        vendingMachineItemInsert(1,6,100,5);
+        vendingMachineItemInsert(1,7,10,10);
+        vendingMachineItemInsert(1,16,10,7);
+    }
+
     public static void loadMyMapDBFromFile() {
         try (ObjectInputStream myMapDBFile = new ObjectInputStream(new FileInputStream("Vending_Machine_data.dat"))) {
-            myMapDB = (MyMapDB) myMapDBFile.readObject();
 
             MyMapDB.userTable = (HashMap<Integer, User>) myMapDBFile.readObject();
             MyMapDB.productTypeTable = (HashMap<Integer, Product>) myMapDBFile.readObject();
