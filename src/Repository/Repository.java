@@ -18,10 +18,10 @@ public class Repository {
     }
 
 
-    public static User userSelectByUserName(Integer userName) {
+    public static User userSelectByUserName(String userName) {
         return MyMapDB.userTable.values().stream().filter(
                 user -> user.getUserName().equals(userName)
-        ).findFirst().get();
+        ).findFirst().orElse(null);
     }
 
     public static void productInsert(String name) {
