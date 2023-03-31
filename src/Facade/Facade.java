@@ -4,10 +4,25 @@ import MyMapDB.*;
 import Repository.*;
 import Service.*;
 
+import java.util.List;
+
 import static Service.Service.stringToItemRequest;
 
 
 public class Facade {
+
+
+    public static List<User> getUserTable() {
+        return Service.getUserTable();
+    }
+
+    public static List<Product> getProductTypeTable() {
+        return Service.getProductTypeTable();
+    }
+
+    public static List<VendingMachineItem> getVendingMachineItemTable() {
+        return Service.getVendingMachineItemTable();
+    }
 
     public enum ItemSlotStatus {
         OCCUPIED, EMPTY, DOES_NOT_EXIST
@@ -85,5 +100,8 @@ public class Facade {
         return UserService.logIn(username, password);
     }
 
+    public static void loadMyMapDB(){
+        Service.loadMyMapDB();
+    }
 
 }

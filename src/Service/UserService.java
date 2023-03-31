@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public static void registerNewUser(String username, String password, int money) {
-        currentUser = Repository.userInsert(username, password, money);
+        Repository.userInsert(username, password, money);
     }
 
     public static User getCurrentUser() {

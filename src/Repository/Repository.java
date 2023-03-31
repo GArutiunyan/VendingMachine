@@ -3,18 +3,19 @@ package Repository;
 import MyMapDB.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Repository {
 
-    public static User userInsert(String username, String password, int money) {
+    public static void userInsert(String username, String password, int money) {
         int newRecordId = MyMapDB.userTable.size() + 1;
         User newUser = new User(newRecordId, username, password, money, User.UserType.CUSTOMER);
         MyMapDB.userTable.put(newRecordId, newUser);
-        return newUser;
+    }
+    public static void userInsert(String username, String password, int money, User.UserType userType) {
+        int newRecordId = MyMapDB.userTable.size() + 1;
+        User newUser = new User(newRecordId, username, password, money, userType);
+        MyMapDB.userTable.put(newRecordId, newUser);
     }
 
     public static User userSelectById(Integer userId) {
@@ -77,7 +78,7 @@ public class Repository {
     }
 
     public static void loadMyMapDBDefaultValues() {
-        userInsert("admin", "admin", 1000000000);
+        userInsert("admin", "admin", 1000000000, User.UserType.OPERATOR);
         userInsert("Gena", "12345", 50000);
         productInsert("Sparkling water");
         productInsert("Sandwich");
@@ -109,4 +110,15 @@ public class Repository {
         }
     }
 
+    public static List<User> getUserTable() {
+        return new ArrayList<User>(MyMapDB.userTable.values().stream().toList());
+    }
+
+    public static List<Product> getProductTypeTable() {
+        return new ArrayList<Product>(MyMapDB.productTypeTable.values().stream().toList());
+    }
+
+    public static List<VendingMachineItem> getVendingMachineItemTable() {
+        return new ArrayList<VendingMachineItem>(MyMapDB.vendingMachineItemTable.values().stream().toList());
+    }
 }

@@ -11,6 +11,18 @@ import java.util.List;
 public class Service {
 
 
+    public static List<User> getUserTable() {
+        return Repository.getUserTable();
+    }
+
+    public static List<Product> getProductTypeTable() {
+        return Repository.getProductTypeTable();
+    }
+
+    public static List<VendingMachineItem> getVendingMachineItemTable() {
+        return Repository.getVendingMachineItemTable();
+    }
+
     public class VendingMachineCharacteristics {
         public static int maxItemsInSlot = 10;
         public static int width = 5;
@@ -90,7 +102,7 @@ public class Service {
         return Repository.productById(productId);
     }
 
-    public static void fillMyMapDB() {
+    public static void loadMyMapDB() {
         if (new File("Vending_Machine_data.dat").isFile()) {
             Repository.loadMyMapDBFromFile();
         } else {
