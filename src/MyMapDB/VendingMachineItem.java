@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class VendingMachineItem implements Serializable {
     static final long SerialVersionUID = 51238620001707L;
-    private int id,productTypeId, price, quantity;
+    private int id, productTypeId, price, quantity;
 
     public VendingMachineItem(int id, int productTypeId, int price, int quantity) {
         this.id = id;

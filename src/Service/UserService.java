@@ -7,18 +7,20 @@ public class UserService {
     public static boolean loginStatus = false;
     public static User currentUser;
 
-    public enum LoginAttemptResult{
-        SUCCESS, USERNAME_DOES_NOT_EXIST,WRONG_PASSWORD
+    public enum LoginAttemptResult {
+        SUCCESS, USERNAME_DOES_NOT_EXIST, WRONG_PASSWORD
     }
-    public static boolean checkLogInStatus(){
+
+    public static boolean checkLogInStatus() {
         return loginStatus;
     }
-    public static LoginAttemptResult logIn(String username, String password){
+
+    public static LoginAttemptResult logIn(String username, String password) {
         User user = Repository.userSelectByUserName(username);
-        if(user==null){
+        if (user == null) {
             return LoginAttemptResult.USERNAME_DOES_NOT_EXIST;
         }
-        if(user.getPassword().equals(password)){
+        if (user.getPassword().equals(password)) {
             currentUser = user;
             loginStatus = true;
             return LoginAttemptResult.SUCCESS;
@@ -26,8 +28,8 @@ public class UserService {
         return LoginAttemptResult.WRONG_PASSWORD;
     }
 
-    public static void registerNewUser(String username, String password, int money){
-        currentUser = Repository.userInsert(username,password,money);
+    public static void registerNewUser(String username, String password, int money) {
+        currentUser = Repository.userInsert(username, password, money);
     }
 
     public static User getCurrentUser() {
