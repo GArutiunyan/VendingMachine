@@ -5,8 +5,8 @@ import MyMapDB.*;
 import Repository.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Service {
 
@@ -19,7 +19,7 @@ public class Service {
         return Repository.getProductTypeTable();
     }
 
-    public static List<VendingMachineItem> getVendingMachineItemTable() {
+    public static Map<Integer, VendingMachineItem> getVendingMachineItemTable() {
         return Repository.getVendingMachineItemTable();
     }
 

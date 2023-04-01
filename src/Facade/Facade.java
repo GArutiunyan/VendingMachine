@@ -5,6 +5,7 @@ import Repository.*;
 import Service.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static Service.Service.stringToItemRequest;
 
@@ -20,13 +21,18 @@ public class Facade {
         return Service.getProductTypeTable();
     }
 
-    public static List<VendingMachineItem> getVendingMachineItemTable() {
+    public static Map<Integer, VendingMachineItem> getVendingMachineItemTable() {
         return Service.getVendingMachineItemTable();
     }
 
     public enum ItemSlotStatus {
         OCCUPIED, EMPTY, DOES_NOT_EXIST
     }
+
+    public static Product productById(Integer productId) {
+        return Service.productById(productId);
+    }
+
 
     public static boolean buyAttempt(String stringItemRequest) {
         Service.ItemRequest itemRequest = stringToItemRequest(stringItemRequest);

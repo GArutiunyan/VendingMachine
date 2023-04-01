@@ -12,6 +12,12 @@ public class VendingMachineItem implements Serializable {
         this.price = price;
         this.quantity = quantity;
     }
+    public VendingMachineItem() {
+        this.id = 1;
+        this.productTypeId = -1;
+        this.price = 0;
+        this.quantity = 0;
+    }
 
     public int getId() {
         return id;

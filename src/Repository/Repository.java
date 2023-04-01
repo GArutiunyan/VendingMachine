@@ -1,11 +1,22 @@
 package Repository;
 
 import MyMapDB.*;
+import Service.Service;
 
 import java.io.*;
 import java.util.*;
 
 public class Repository {
+
+    static {
+        MyMapDB.productTypeTable.put(-1, new Product(-1,"def"));
+//        MyMapDB.productTypeTable.put(0, MyMapDB.productTypeTable.get(-1));
+        VendingMachineItem emptySlot = new VendingMachineItem();
+        for(int i = -1; i<=Service.VendingMachineCharacteristics.getMaxIndex();i++){
+            vendingMachineItemInsert(i,-1,0,0);
+        }
+    }
+
 
     public static void userInsert(String username, String password, int money) {
         int newRecordId = MyMapDB.userTable.size() + 1;
@@ -30,7 +41,7 @@ public class Repository {
     }
 
     public static void productInsert(String name) {
-        int newRecordId = MyMapDB.productTypeTable.size() + 1;
+        int newRecordId = MyMapDB.productTypeTable.size();
         Product newProduct = new Product(newRecordId, name);
         MyMapDB.productTypeTable.put(newRecordId, newProduct);
     }
@@ -79,6 +90,7 @@ public class Repository {
 
     public static void loadMyMapDBDefaultValues() {
         userInsert("admin", "admin", 1000000000, User.UserType.OPERATOR);
+        userInsert("", "", 100000);
         userInsert("Gena", "12345", 50000);
         productInsert("Sparkling water");
         productInsert("Sandwich");
@@ -89,12 +101,12 @@ public class Repository {
         productInsert("IPhone 15");
         vendingMachineItemInsert(1, 1, 100, 10);
         vendingMachineItemInsert(3, 2, 150, 10);
-        vendingMachineItemInsert(1, 3, 200, 4);
-        vendingMachineItemInsert(1, 4, 100, 10);
-        vendingMachineItemInsert(1, 5, 180, 8);
-        vendingMachineItemInsert(1, 6, 100, 5);
-        vendingMachineItemInsert(1, 7, 10, 10);
-        vendingMachineItemInsert(1, 16, 10, 7);
+        vendingMachineItemInsert(9, 3, 200, 4);
+        vendingMachineItemInsert(12, 4, 100, 10);
+        vendingMachineItemInsert(19, 5, 180, 8);
+        vendingMachineItemInsert(21, 6, 100, 5);
+        vendingMachineItemInsert(22, 7, 10, 10);
+        vendingMachineItemInsert(25, 1, 10, 7);
     }
 
     public static void loadMyMapDBFromFile() {
@@ -118,7 +130,9 @@ public class Repository {
         return new ArrayList<Product>(MyMapDB.productTypeTable.values().stream().toList());
     }
 
-    public static List<VendingMachineItem> getVendingMachineItemTable() {
-        return new ArrayList<VendingMachineItem>(MyMapDB.vendingMachineItemTable.values().stream().toList());
+    public static Map<Integer, VendingMachineItem> getVendingMachineItemTable() {
+//        return new ArrayList<VendingMachineItem>(MyMapDB.vendingMachineItemTable.values().stream().toList());
+        return (Map<Integer,VendingMachineItem>)MyMapDB.vendingMachineItemTable.clone();
+
     }
 }

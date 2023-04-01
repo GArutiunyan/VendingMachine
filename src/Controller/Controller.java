@@ -76,7 +76,7 @@ public class Controller {
     }
 
 
-    public static void vendingMachine() {
+    public static void soutVendingMachine() {
         clearScreen();
         ControllerSoutTables.soutVendingMachine();
     }

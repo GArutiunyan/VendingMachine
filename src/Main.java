@@ -10,7 +10,7 @@ public class Main {
             return;
         }
 
-        Controller.vendingMachine();
+        Controller.soutVendingMachine();
 
     }
 }

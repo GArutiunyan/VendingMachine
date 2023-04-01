@@ -11,6 +11,10 @@ public class Product implements Serializable {
         this.id = id;
         this.name = name;
     }
+    public Product() {
+        this.id = -1;
+        this.name = "";
+    }
 
     public int getId() {
         return id;
