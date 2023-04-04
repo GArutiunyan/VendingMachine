@@ -44,18 +44,20 @@ public class ControllerSoutTables {
         public static int widthOfMachine;
         public static int heightOfMachine;
         public static int maxItemsInCell;
+        public static int maxCellsInMachine;
 
         static Map<Integer, VendingMachineItem> vendingMachineItems;
         public static void fillMaxItemWidth(){
             widthOfMachine = Service.VendingMachineCharacteristics.width;
             heightOfMachine = Service.VendingMachineCharacteristics.height;
-            maxItemsInCell = Service.VendingMachineCharacteristics.getMaxIndex();
+            maxItemsInCell = Service.VendingMachineCharacteristics.maxItemsInSlot;
+            maxCellsInMachine = Service.VendingMachineCharacteristics.getMaxIndex();
             vendingMachineItems = Facade.getVendingMachineItemTable();
 
-            for (int indexJ = 1; indexJ <= widthOfMachine; indexJ++){
+            for (int indexJ = 0; indexJ < widthOfMachine; indexJ++){
                 int maxIndexJItemWidth = 0;
-                for (int i = 1; i <= maxItemsInCell; i+=widthOfMachine){
-                    VendingMachineItem vendingMachineItem = vendingMachineItems.get(i);
+                for (int i = 1; i <= maxCellsInMachine; i+=widthOfMachine){
+                    VendingMachineItem vendingMachineItem = vendingMachineItems.get(indexJ+i);
                     String name = Facade.productById(vendingMachineItem.getProductTypeId()).getName();
                     String price = ""+ vendingMachineItem.getPrice();
                     String quantity = "" + vendingMachineItem.getQuantity()+"/"+Service.VendingMachineCharacteristics.maxItemsInSlot;
@@ -162,13 +164,16 @@ public class ControllerSoutTables {
                             continue;
                         }
                         VendingMachineItem vendingMachineItem;
-                        int itemId = i*j;
+                        int itemId = (i-1)*widthOfMachine+j;
                         if (Facade.itemSlotIsOccupied(itemId)== Facade.ItemSlotStatus.OCCUPIED){
                             vendingMachineItem = vendingMachineItems.get(itemId);
                         }else {
                             vendingMachineItem = vendingMachineItems.get(-1);
                         }
                         System.out.print(drawLayerOfCell(layerOfCell,vendingMachineItem,i,j));
+                    }
+                    if(i>heightOfMachine){
+                        continue;
                     }
                     System.out.println();
                 }
@@ -194,7 +199,7 @@ public class ControllerSoutTables {
         static String drawLayerOfCell(LayerOfCell layerOfCell, VendingMachineItem vendingMachineItem,int indexI, int indexJ) {
 
             char frame;
-            if (indexJ == 1||indexJ>Service.VendingMachineCharacteristics.width) {
+            if (indexJ == 1||indexJ>widthOfMachine) {
                 frame = frameFragments[3];
             } else {
                 frame = frameFragments[10];
@@ -213,10 +218,11 @@ public class ControllerSoutTables {
                 }
                 case NAME: {
                     String name = Facade.productById(vendingMachineItem.getProductTypeId()).getName();
+//                    name+=vendingMachineItem.getId();
                     return frame+middleAlignment(name,indexJ);
                 }
                 case PRICE:{
-                    String price = ""+ vendingMachineItem.getPrice()+"₽";
+                    String price = ""+ vendingMachineItem.getPrice()+"rub";
                     return frame+middleAlignment(price,indexJ);
                 }
                 case QUANTITY:{
@@ -231,4 +237,8 @@ public class ControllerSoutTables {
     public static void soutVendingMachine() {
         SoutVendingMachine.soutVendingMachine();
     }
+
+
+
+
 }

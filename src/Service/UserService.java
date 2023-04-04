@@ -5,7 +5,7 @@ import Repository.Repository;
 
 public class UserService {
     public static boolean loginStatus = false;
-    public static User currentUser;
+    public static User currentUser = null;
 
     public enum LoginAttemptResult {
         SUCCESS, USERNAME_DOES_NOT_EXIST, WRONG_PASSWORD
@@ -32,6 +32,10 @@ public class UserService {
         Repository.userInsert(username, password, money);
     }
 
+    public static void logOut(){
+        currentUser = null;
+        loginStatus = false;
+    }
     public static User getCurrentUser() {
         return currentUser;
     }

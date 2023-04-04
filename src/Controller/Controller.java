@@ -16,6 +16,13 @@ public class Controller {
             e.printStackTrace();
         }
     }
+    public static void threadSleep(int millis){
+        try {
+            Thread.sleep(millis);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
     static Scanner scanner = new Scanner(System.in);
 
 
@@ -23,6 +30,62 @@ public class Controller {
         Facade.loadMyMapDB();
     }
 
+
+    public static void buyScreen(){
+        int input;
+        int option = 0;
+        while(Facade.isLoggedIn()) {
+            clearScreen();
+            ControllerSoutTables.soutVendingMachine();
+            System.out.println();
+            System.out.println("Баланс: " + Facade.userMoney());
+            while (option == 0){
+                    System.out.println("1. Купить");
+                if (Facade.userIsOperator()) {
+                    System.out.println("2. Добавить продукты в автомат");
+                    System.out.println("3. Добавить новый тип продукта");
+                }
+                System.out.println("4. Выйти");
+                input = scanner.nextInt();
+                scanner.nextLine();
+                option = input;
+            }
+            switch (option){
+                case 1:{
+                    System.out.println("Формат ввода - столбец:строка:количество");
+                    while (true) {
+                        String stringItemRequest = scanner.nextLine();
+                        if(Facade.buyAttempt(stringItemRequest)){
+                            break;
+                        };
+                    }
+                    break;
+                }
+                case 2:{
+                    if(Facade.userIsOperator()){
+
+                    }
+                    break;
+                }
+                case 3:{
+                    if(Facade.userIsOperator()){
+                        continue;
+                    }
+                    break;
+                }
+                case 4:{
+                    Facade.userLogOut();
+                    break;
+                }
+                default:{
+                    clearScreen();
+                    System.out.println("ERROR");
+                    threadSleep(1000);
+                }
+            }
+
+        }
+    }
     public static void loginScreen(){
         int input;
         while(!Facade.isLoggedIn()){
@@ -48,11 +111,7 @@ public class Controller {
                         case USERNAME_DOES_NOT_EXIST -> System.out.println("USERNAME_DOES_NOT_EXIST");
                         case SUCCESS -> System.out.println("SUCCESS");
                     }
-                    try {
-                        Thread.sleep(1000);
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
+                    threadSleep(1000);
                     break;
                 }
                 case 2:{

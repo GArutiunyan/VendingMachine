@@ -9,8 +9,7 @@ public class Main {
         if(!Facade.isLoggedIn()){
             return;
         }
-
-        Controller.soutVendingMachine();
+        Controller.buyScreen();
 
     }
 }

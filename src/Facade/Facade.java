@@ -36,21 +36,30 @@ public class Facade {
 
     public static boolean buyAttempt(String stringItemRequest) {
         Service.ItemRequest itemRequest = stringToItemRequest(stringItemRequest);
-        if (itemRequest.itemId == null || itemRequest.quantity == null) {
+        if (itemRequest.quantity<0||itemRequest.itemId >Service.VendingMachineCharacteristics.getMaxIndex()|| itemRequest.itemId <Service.VendingMachineCharacteristics.getMinIndex()||itemRequest.itemId == null || itemRequest.quantity == null) {
+            System.out.println("ERROR");
             return false;
         }
         VendingMachineItem vendingMachineItem = Repository.vendingMachineItemById(itemRequest.itemId);
-        if (vendingMachineItem.getQuantity() >= itemRequest.quantity && vendingMachineItem.getPrice() * itemRequest.quantity <= UserService.currentUser.getMoney()) {
-            Service.buy(vendingMachineItem, itemRequest.quantity);
-            return true;
+        if(vendingMachineItem.getQuantity() < itemRequest.quantity){
+            System.out.println("Нет продуктов");
+            return false;
         }
-        return false;
+        if(vendingMachineItem.getPrice() * itemRequest.quantity > UserService.currentUser.getMoney()){
+            System.out.println("Недостаточно средств");
+            return false;
+        }
+        Service.buy(vendingMachineItem, itemRequest.quantity);
+        return true;
     }
 
     public static boolean userIsOperator() {
         return UserService.currentUser.getUserType() == User.UserType.OPERATOR;
     }
 
+    public static int userMoney() {
+        return UserService.currentUser.getMoney();
+    }
     public static boolean addItemsToVendingMachineAttempt(Integer itemId, Integer productTypeId, Integer price, Integer quantity) {
 
         if (Service.vendingMachineItemById(itemId).getQuantity() + quantity > 10) {
@@ -61,6 +70,9 @@ public class Facade {
         }
         Service.addItemsToVendingMachine(itemId, productTypeId, price, quantity);
         return true;
+    }
+    public static void userLogOut(){
+        UserService.logOut();
     }
 
     public static ItemSlotStatus itemSlotIsOccupied(Integer itemId) {
