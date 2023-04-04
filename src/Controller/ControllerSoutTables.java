@@ -43,18 +43,18 @@ public class ControllerSoutTables {
         public static boolean maxItemWidthIsFilled = false;
         public static int widthOfMachine;
         public static int heightOfMachine;
-        public static int maxOfCell;
+        public static int maxItemsInCell;
 
         static Map<Integer, VendingMachineItem> vendingMachineItems;
         public static void fillMaxItemWidth(){
             widthOfMachine = Service.VendingMachineCharacteristics.width;
             heightOfMachine = Service.VendingMachineCharacteristics.height;
-            maxOfCell = Service.VendingMachineCharacteristics.getMaxIndex();
+            maxItemsInCell = Service.VendingMachineCharacteristics.getMaxIndex();
             vendingMachineItems = Facade.getVendingMachineItemTable();
 
             for (int indexJ = 1; indexJ <= widthOfMachine; indexJ++){
                 int maxIndexJItemWidth = 0;
-                for (int i = 1; i <= maxOfCell;i+=widthOfMachine){
+                for (int i = 1; i <= maxItemsInCell; i+=widthOfMachine){
                     VendingMachineItem vendingMachineItem = vendingMachineItems.get(i);
                     String name = Facade.productById(vendingMachineItem.getProductTypeId()).getName();
                     String price = ""+ vendingMachineItem.getPrice();
@@ -91,51 +91,87 @@ public class ControllerSoutTables {
                 if(indexJ==1){
                     frame = frameFragments[5];
                 }else {
-                    frame = frameFragments[1];
+                    frame = frameFragments[9];
                 }
-                return frame + (""+frameFragments[1]).repeat(maxItemWidth.get(indexJ));
-            }
-            if(indexJ>width){
-                return frameFragments[8]+"";
+                return frame + (""+frameFragments[1]).repeat(maxItemWidth.get(indexJ)+1);
             }
 
             if (indexI == 1) {
                 if (indexJ == 1) {
                     result.append(frameFragments[0]);
-                } else {
+                }else if(indexJ>width){
+                    result.append(frameFragments[2]);
+                    return result.toString();
+                }else {
                     result.append(frameFragments[7]);
                 }
-                result.append(frameFragments[1] * maxItemWidth.get(indexJ));
+                result.append((""+frameFragments[1]).repeat(maxItemWidth.get(indexJ)+1));
+                return result.toString();
             } else {
+                if(indexJ>width){
+                    return frameFragments[8]+"";
+                }else
                 if (indexJ == 1) {
                     result.append(frameFragments[6]);
                 } else {
                     result.append(frameFragments[12]);
                 }
-                result.append((""+frameFragments[11]).repeat(maxItemWidth.get(indexJ)));
+                result.append((""+frameFragments[11]).repeat(maxItemWidth.get(indexJ)+1));
             }
             return result.toString();
         }
 
+
+        public static void soutNumberOfColumns(){
+            System.out.print("   ");
+            for(int columnNumber = 1; columnNumber<=widthOfMachine; columnNumber++){
+                int cellWidth = maxItemWidth.get(columnNumber)+2;
+                String format = "%" + cellWidth + "s";
+                String columnNumberCenter = (""+columnNumber+" ".repeat(cellWidth/2));
+                System.out.format(format, columnNumberCenter);
+            }
+            System.out.println();
+        }
+        public static void soutNumberOfRows(int i, LayerOfCell layerOfCell){
+            if (layerOfCell!=LayerOfCell.NAME){
+                System.out.print("   ");
+                return;
+            }
+            char rowChar = 'A'-1;
+            rowChar+=i;
+            System.out.print(" "+rowChar+" ");
+        }
         public static void soutVendingMachine() {
 
             if (!maxItemWidthIsFilled) {
                 fillMaxItemWidth();
             }
-
-            for (int i = 0; i <= Service.VendingMachineCharacteristics.height + 1; i++) {
-                int widthOfMachine = Service.VendingMachineCharacteristics.width;
-                for (int j = 0; j <= widthOfMachine+1;j++){
-                    VendingMachineItem vendingMachineItem;
-                    int itemId = i*j;
-                    if (Facade.itemSlotIsOccupied(itemId)== Facade.ItemSlotStatus.OCCUPIED){
-                        vendingMachineItem = vendingMachineItems.get(itemId);
-                    }else {
-                        vendingMachineItem = vendingMachineItems.get(-1);
+            soutNumberOfColumns();
+            for (int i = 1; i <= heightOfMachine+1; i++) {
+                for(LayerOfCell layerOfCell: LayerOfCell.values()){
+                    for (int j = 0; j <= widthOfMachine+1;j++){
+                        if(j==0){
+                            if(i<=heightOfMachine) {
+                                soutNumberOfRows(i, layerOfCell);
+                            }else {
+                                System.out.print("   ");
+                            }
+                            continue;
+                        }
+                        if(i>heightOfMachine && layerOfCell!=LayerOfCell.FRAME){
+                            continue;
+                        }
+                        VendingMachineItem vendingMachineItem;
+                        int itemId = i*j;
+                        if (Facade.itemSlotIsOccupied(itemId)== Facade.ItemSlotStatus.OCCUPIED){
+                            vendingMachineItem = vendingMachineItems.get(itemId);
+                        }else {
+                            vendingMachineItem = vendingMachineItems.get(-1);
+                        }
+                        System.out.print(drawLayerOfCell(layerOfCell,vendingMachineItem,i,j));
                     }
-                    System.out.print(i+" "+j+" "+ drawLayerOfCell(LayerOfCell.NAME,vendingMachineItem,i,j));
+                    System.out.println();
                 }
-                System.out.println();
             }
         }
 
@@ -150,22 +186,26 @@ public class ControllerSoutTables {
             String middleAlignment = " ".repeat(Math.max(0, (maxItemWidth.get(indexJ) - initialString.length()) / 2));
             result.append(middleAlignment);
             result.append(initialString);
-            result.append(middleAlignment);
-            if (result.length()<maxItemWidth.get(indexJ)+1){
+            while (result.length()<maxItemWidth.get(indexJ)+1){
                 result.append(" ");
             }
             return result.toString();
         }
         static String drawLayerOfCell(LayerOfCell layerOfCell, VendingMachineItem vendingMachineItem,int indexI, int indexJ) {
-            if(vendingMachineItem==null){
-                System.out.println("NULL GOVNO");
-            }
+
             char frame;
             if (indexJ == 1||indexJ>Service.VendingMachineCharacteristics.width) {
                 frame = frameFragments[3];
             } else {
-
                 frame = frameFragments[10];
+            }
+
+            if(layerOfCell!=LayerOfCell.FRAME && indexJ>widthOfMachine){
+                return ""+frame;
+            }
+
+            if(layerOfCell!=LayerOfCell.FRAME && vendingMachineItem.getProductTypeId()==-1){
+                return frame+middleAlignment("",indexJ);
             }
             switch (layerOfCell) {
                 case FRAME:{
@@ -176,7 +216,7 @@ public class ControllerSoutTables {
                     return frame+middleAlignment(name,indexJ);
                 }
                 case PRICE:{
-                    String price = ""+ vendingMachineItem.getPrice();
+                    String price = ""+ vendingMachineItem.getPrice()+"₽";
                     return frame+middleAlignment(price,indexJ);
                 }
                 case QUANTITY:{

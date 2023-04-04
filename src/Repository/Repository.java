@@ -9,8 +9,7 @@ import java.util.*;
 public class Repository {
 
     static {
-        MyMapDB.productTypeTable.put(-1, new Product(-1,"def"));
-//        MyMapDB.productTypeTable.put(0, MyMapDB.productTypeTable.get(-1));
+        MyMapDB.productTypeTable.put(-1, new Product(-1,""));
         VendingMachineItem emptySlot = new VendingMachineItem();
         for(int i = -1; i<=Service.VendingMachineCharacteristics.getMaxIndex();i++){
             vendingMachineItemInsert(i,-1,0,0);
