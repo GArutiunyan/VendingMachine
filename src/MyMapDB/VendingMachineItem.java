@@ -47,4 +47,11 @@ public class VendingMachineItem implements Serializable {
         this.quantity = quantity;
     }
 
+    @Override
+    public String toString() {
+        return "id=" + id +
+                ", productTypeId=" + productTypeId +
+                ", price=" + price +
+                ", quantity=" + quantity;
+    }
 }

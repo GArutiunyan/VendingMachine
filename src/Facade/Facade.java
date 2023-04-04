@@ -7,8 +7,6 @@ import Service.*;
 import java.util.List;
 import java.util.Map;
 
-import static Service.Service.stringToItemRequest;
-
 
 public class Facade {
 
@@ -25,6 +23,13 @@ public class Facade {
         return Service.getVendingMachineItemTable();
     }
 
+    public static Service.ItemRequest stringToItemRequest(String stringItemRequest) {
+        return Service.stringToItemRequest(stringItemRequest);
+    }
+
+    public static boolean checkItemRequest(Service.ItemRequest itemRequest){
+        return Service.checkItemRequest(itemRequest);
+    }
     public enum ItemSlotStatus {
         OCCUPIED, EMPTY, DOES_NOT_EXIST
     }
@@ -36,10 +41,7 @@ public class Facade {
 
     public static boolean buyAttempt(String stringItemRequest) {
         Service.ItemRequest itemRequest = stringToItemRequest(stringItemRequest);
-        if (itemRequest.quantity<0||itemRequest.itemId >Service.VendingMachineCharacteristics.getMaxIndex()|| itemRequest.itemId <Service.VendingMachineCharacteristics.getMinIndex()||itemRequest.itemId == null || itemRequest.quantity == null) {
-            System.out.println("ERROR");
-            return false;
-        }
+        checkItemRequest(itemRequest);
         VendingMachineItem vendingMachineItem = Repository.vendingMachineItemById(itemRequest.itemId);
         if(vendingMachineItem.getQuantity() < itemRequest.quantity){
             System.out.println("Нет продуктов");
@@ -96,6 +98,9 @@ public class Facade {
         }
         Service.vendingMachineItemQuantityInsert(itemId, newQuantity);
         return true;
+    }
+    public static VendingMachineItem vendingMachineItemById(int itemId){
+        return Service.vendingMachineItemById(itemId);
     }
 
     public static boolean addNewProductTypeAttempt(String name) {

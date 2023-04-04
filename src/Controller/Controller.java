@@ -1,83 +1,167 @@
 package Controller;
 
 import Facade.Facade;
+import MyMapDB.VendingMachineItem;
 import Service.Service;
 import Service.UserService;
 
 import java.io.IOException;
 import java.util.Scanner;
 
+import static Service.Service.stringToItemRequest;
+
 public class Controller {
 
-    public static void clearScreen(){
+    public static void clearScreen() {
         try {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        } catch (IOException | InterruptedException e){
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
-    public static void threadSleep(int millis){
+
+    public static void threadSleep(int millis) {
         try {
             Thread.sleep(millis);
-        }catch(InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
     static Scanner scanner = new Scanner(System.in);
 
 
-    public static void loadMyMapDB(){
+    public static void loadMyMapDB() {
         Facade.loadMyMapDB();
     }
 
+    public static void editVendingMachineScreen() {
+        if (!Facade.userIsOperator()) {
+            return;
+        }
+        boolean done = false;
+        while (!done) {
+            System.out.println("Выберите ячейку");
+            System.out.println("e - отмена. Формат ввода - столбец:строка:0");
+            String stringItemRequest = scanner.nextLine();
+            if (stringItemRequest.equals("e")) {
+                break;
+            }
+            Service.ItemRequest itemRequest = Facade.stringToItemRequest(stringItemRequest);
+            if (!Facade.checkItemRequest(itemRequest)) {
+                System.out.println("ERROR");
+                continue;
+            }
+            VendingMachineItem vendingMachineItem = Facade.vendingMachineItemById(itemRequest.itemId);
+            System.out.println(vendingMachineItem);
+            while (true) {
+                System.out.println("Что сделать?");
+                System.out.println("1. Восполнить запас");
+                System.out.println("2. Изменить цену");
+                System.out.println("3. Изменить продукт");
+                System.out.println("4. отмена");
+                int input = scanner.nextInt();
+                if (input == 4) {
+                    done = true;
+                    break;
+                }
+                switch (input) {
+                    case 1: {
+                        while (true){
+                            System.out.println("Сколько доложить?");
+                            input = scanner.nextInt();
+                            if(Facade.resupplyItemsInVendingMachine(itemRequest.itemId, input + Facade.vendingMachineItemById(itemRequest.itemId).getQuantity())) {
+                                done = true;
+                                break;
+                            }else {
+                                System.out.println("Не помещается.");
+                            };
+                        }
 
-    public static void buyScreen(){
+                        break;
+                    }
+                    case 2: {
+                        System.out.println("Новая цена:");
+                        int price = scanner.nextInt();
+                        int productTypeId = vendingMachineItem.getProductTypeId();
+                        int quantity = vendingMachineItem.getQuantity();
+                        Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity);
+                        done = true;
+                        break;
+                    }
+                    case 3: {
+                        while (true){
+                            ControllerSoutTables.soutProductTypes();
+                            System.out.println("id продукта:");
+                            int productTypeId = scanner.nextInt();
+                            System.out.println("количество");
+                            int quantity = scanner.nextInt();
+                            System.out.println("цена:");
+                            int price = scanner.nextInt();
+                            if(Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity)) {
+                                done = true;
+                                break;
+                            }else {
+                                System.out.println("ОШИБКА");
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    public static void buyScreen() {
+        System.out.println("e - отмена. Формат ввода - столбец:строка:количество");
+        while (true) {
+            String stringItemRequest = scanner.nextLine();
+            if (stringItemRequest.equals("e")) {
+                break;
+            }
+            if (Facade.buyAttempt(stringItemRequest)) {
+                break;
+            }
+            ;
+        }
+    }
+
+    public static void mainMenu() {
         int input;
-        int option = 0;
-        while(Facade.isLoggedIn()) {
+        while (Facade.isLoggedIn()) {
             clearScreen();
             ControllerSoutTables.soutVendingMachine();
             System.out.println();
             System.out.println("Баланс: " + Facade.userMoney());
-            while (option == 0){
-                    System.out.println("1. Купить");
-                if (Facade.userIsOperator()) {
-                    System.out.println("2. Добавить продукты в автомат");
-                    System.out.println("3. Добавить новый тип продукта");
-                }
-                System.out.println("4. Выйти");
-                input = scanner.nextInt();
-                scanner.nextLine();
-                option = input;
+            System.out.println("1. Купить");
+            if (Facade.userIsOperator()) {
+                System.out.println("2. Добавить продукты в автомат");
+                System.out.println("3. Добавить новый тип продукта");
             }
-            switch (option){
-                case 1:{
-                    System.out.println("Формат ввода - столбец:строка:количество");
-                    while (true) {
-                        String stringItemRequest = scanner.nextLine();
-                        if(Facade.buyAttempt(stringItemRequest)){
-                            break;
-                        };
-                    }
+            System.out.println("4. Выйти");
+            input = scanner.nextInt();
+            scanner.nextLine();
+            switch (input) {
+                case 1: {
+                    buyScreen();
                     break;
                 }
-                case 2:{
-                    if(Facade.userIsOperator()){
-
-                    }
+                case 2: {
+                    editVendingMachineScreen();
                     break;
                 }
-                case 3:{
-                    if(Facade.userIsOperator()){
+                case 3: {
+                    if (Facade.userIsOperator()) {
                         continue;
                     }
                     break;
                 }
-                case 4:{
+                case 4: {
                     Facade.userLogOut();
                     break;
                 }
-                default:{
+                default: {
                     clearScreen();
                     System.out.println("ERROR");
                     threadSleep(1000);
@@ -86,9 +170,10 @@ public class Controller {
 
         }
     }
-    public static void loginScreen(){
+
+    public static void loginScreen() {
         int input;
-        while(!Facade.isLoggedIn()){
+        while (!Facade.isLoggedIn()) {
             clearScreen();
             ControllerSoutTables.soutUsers();
             System.out.println("1. Войти");
@@ -96,17 +181,17 @@ public class Controller {
             System.out.println("3. Выйти");
             input = scanner.nextInt();
             scanner.nextLine();
-            switch (input){
-                case 1:{
+            switch (input) {
+                case 1: {
                     System.out.println("Log in:");
                     System.out.print("Username: ");
                     String username = scanner.nextLine();
                     System.out.print("Password: ");
                     String password = scanner.nextLine();
                     UserService.LoginAttemptResult loginAttemptResult;
-                    loginAttemptResult = Facade.logIn(username,password);
+                    loginAttemptResult = Facade.logIn(username, password);
                     clearScreen();
-                    switch (loginAttemptResult){
+                    switch (loginAttemptResult) {
                         case WRONG_PASSWORD -> System.out.println("WRONG_PASSWORD");
                         case USERNAME_DOES_NOT_EXIST -> System.out.println("USERNAME_DOES_NOT_EXIST");
                         case SUCCESS -> System.out.println("SUCCESS");
@@ -114,7 +199,7 @@ public class Controller {
                     threadSleep(1000);
                     break;
                 }
-                case 2:{
+                case 2: {
                     System.out.println("Register:");
                     System.out.print("Username: ");
                     String username = scanner.nextLine();
@@ -122,11 +207,11 @@ public class Controller {
                     String password = scanner.nextLine();
                     System.out.print("How much money do you have: ");
                     Integer money = scanner.nextInt();
-                    Facade.registerNewUser(username,password,money);
+                    Facade.registerNewUser(username, password, money);
                     clearScreen();
                     break;
                 }
-                case 3:{
+                case 3: {
                     return;
                 }
             }

@@ -5,11 +5,12 @@ import Service.UserService;
 public class Main {
     public static void main(String[] args) {
         Controller.loadMyMapDB();
-        Controller.loginScreen();
-        if(!Facade.isLoggedIn()){
-            return;
+        while (true){
+            Controller.loginScreen();
+            if(!Facade.isLoggedIn()){
+                return;
+            }
+            Controller.mainMenu();
         }
-        Controller.buyScreen();
-
     }
 }

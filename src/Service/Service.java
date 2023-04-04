@@ -59,6 +59,19 @@ public class Service {
         }
     }
 
+
+    public static boolean checkItemRequest(ItemRequest itemRequest){
+        if (itemRequest.itemId == null || itemRequest.quantity == null) {
+            System.out.println("ERROR");
+            return false;
+        }
+        if(itemRequest.quantity<0||itemRequest.itemId >Service.VendingMachineCharacteristics.getMaxIndex()|| itemRequest.itemId <Service.VendingMachineCharacteristics.getMinIndex()){
+            System.out.println("ERROR");
+            return false;
+        }
+        return true;
+    }
+
     public static ItemRequest stringToItemRequest(String stringItemRequest) {
         String[] input = stringItemRequest.replace(" ", "").split(":");
         if (input.length < 2) {
