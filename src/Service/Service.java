@@ -96,6 +96,7 @@ public class Service {
     }
 
     public static void addItemsToVendingMachine(Integer itemId, Integer productTypeId, Integer price, Integer quantity) {
+        System.out.println("Добавил itemId:"+itemId);
         Repository.vendingMachineItemInsert(itemId, productTypeId, price, quantity);
     }
 
@@ -127,5 +128,8 @@ public class Service {
         return Repository.getPurchasesByUserId(userId);
     }
 
+    public static void saveMyMapDBToFile(){
+        Repository.saveMyMapDBToFile();
+    }
 
 }

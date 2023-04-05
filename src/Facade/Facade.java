@@ -30,6 +30,15 @@ public class Facade {
     public static boolean checkItemRequest(Service.ItemRequest itemRequest){
         return Service.checkItemRequest(itemRequest);
     }
+
+    public static List<PurchasedProduct> getPurchasedProductTable(int userId) {
+        return Service.getPurchasesByUserId(userId);
+    }
+
+    public static int getUserId() {
+        return UserService.getCurrentUser().getUserId();
+    }
+
     public enum ItemSlotStatus {
         OCCUPIED, EMPTY, DOES_NOT_EXIST
     }
@@ -64,7 +73,7 @@ public class Facade {
     }
     public static boolean addItemsToVendingMachineAttempt(Integer itemId, Integer productTypeId, Integer price, Integer quantity) {
 
-        if (Service.vendingMachineItemById(itemId).getQuantity() + quantity > 10) {
+        if (Service.vendingMachineItemById(itemId).getQuantity() > Service.VendingMachineCharacteristics.maxItemsInSlot) {
             return false;
         }
         if (!userIsOperator()) {
@@ -81,7 +90,7 @@ public class Facade {
         if (itemId < Service.VendingMachineCharacteristics.getMinIndex() || itemId > Service.VendingMachineCharacteristics.getMaxIndex()) {
             return ItemSlotStatus.DOES_NOT_EXIST;
         }
-        if (Service.vendingMachineItemById(itemId) == null) {
+        if (Service.vendingMachineItemById(itemId) == null || Service.vendingMachineItemById(itemId).getProductTypeId()==-1) {
             return ItemSlotStatus.EMPTY;
         }
         return ItemSlotStatus.OCCUPIED;
@@ -125,6 +134,10 @@ public class Facade {
 
     public static void loadMyMapDB(){
         Service.loadMyMapDB();
+    }
+
+    public static void saveMyMapDBToFile(){
+        Service.saveMyMapDBToFile();
     }
 
 }

@@ -60,12 +60,36 @@ public class ControllerSoutTables {
         }
     }
 
+    public static void soutUserOrders() {
+        List<PurchasedProduct> purchasedProducts = Facade.getPurchasedProductTable(Facade.getUserId());
+        int nameMaxLength = 4;
+        int quantityMaxLength = 8;
+        for (PurchasedProduct purchasedProduct : purchasedProducts) {
+            int productNameLength = Facade.productById(purchasedProduct.getProductTypeId()).getName().length();
+            if (productNameLength > nameMaxLength) {
+                nameMaxLength = productNameLength;
+            }
+            int quantityLength = ("" + purchasedProduct.getQuantity()).length();
+            if (quantityLength > quantityMaxLength) {
+                quantityMaxLength = quantityLength;
+            }
+        }
+        quantityMaxLength++;
+        nameMaxLength++;
+        String format = "%" + nameMaxLength + "s%" + quantityMaxLength + "s";
+        System.out.format(format, "name", "quantity");
+        System.out.println();
+        for (PurchasedProduct purchasedProduct : purchasedProducts) {
+            System.out.format(format, Facade.productById(purchasedProduct.getProductTypeId()).getName(), purchasedProduct.getQuantity());
+            System.out.println();
+        }
+    }
+
 
     public static class SoutVendingMachine {
 
         public static char[] frameFragments = {'╔', '═', '╗', '║', '╝', '╚', '╟', '╤', '╢', '╧', '│', '─', '┼'};
-        public static Map<Integer, Integer> maxItemWidth = new HashMap<>();
-        public static boolean maxItemWidthIsFilled = false;
+        public static Map<Integer, Integer> maxItemWidth;
         public static int widthOfMachine;
         public static int heightOfMachine;
         public static int maxItemsInCell;
@@ -73,7 +97,8 @@ public class ControllerSoutTables {
 
         static Map<Integer, VendingMachineItem> vendingMachineItems;
 
-        public static void fillMaxItemWidth() {
+        public static void fillListsForSout() {
+            maxItemWidth = new HashMap<>();
             widthOfMachine = Service.VendingMachineCharacteristics.width;
             heightOfMachine = Service.VendingMachineCharacteristics.height;
             maxItemsInCell = Service.VendingMachineCharacteristics.maxItemsInSlot;
@@ -103,7 +128,6 @@ public class ControllerSoutTables {
 //            maxItemWidth.put(-1,0);
             maxItemWidth.put(0, 0);
             maxItemWidth.put(6, 0);
-            maxItemWidthIsFilled = true;
         }
 
         static String drawFrame(int indexI, int indexJ) {
@@ -172,9 +196,8 @@ public class ControllerSoutTables {
 
         public static void soutVendingMachine() {
 
-            if (!maxItemWidthIsFilled) {
-                fillMaxItemWidth();
-            }
+            fillListsForSout();
+
             soutNumberOfColumns();
             for (int i = 1; i <= heightOfMachine + 1; i++) {
                 for (LayerOfCell layerOfCell : LayerOfCell.values()) {

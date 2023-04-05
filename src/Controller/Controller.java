@@ -53,60 +53,64 @@ public class Controller {
                 continue;
             }
             VendingMachineItem vendingMachineItem = Facade.vendingMachineItemById(itemRequest.itemId);
-            System.out.println(vendingMachineItem);
-            while (true) {
-                System.out.println("Что сделать?");
+            //System.out.println(vendingMachineItem);
+            System.out.println("Что сделать?");
+            if(Facade.itemSlotIsOccupied(itemRequest.itemId)== Facade.ItemSlotStatus.OCCUPIED) {
                 System.out.println("1. Восполнить запас");
                 System.out.println("2. Изменить цену");
                 System.out.println("3. Изменить продукт");
-                System.out.println("4. отмена");
-                int input = scanner.nextInt();
-                if (input == 4) {
+            }else {
+                System.out.println("3. Добавить продукт");
+            }
+            System.out.println("4. отмена");
+            int input = scanner.nextInt();
+            if (input == 4) {
+                done = true;
+                break;
+            }
+            switch (input) {
+                case 1: {
+                    while (true) {
+                        System.out.println("Сколько доложить?");
+                        input = scanner.nextInt();
+                        if (Facade.resupplyItemsInVendingMachine(itemRequest.itemId, input)) {
+                            done = true;
+                            break;
+                        } else {
+                            System.out.println("Не помещается.");
+                        }
+                        ;
+                    }
+
+                    break;
+                }
+                case 2: {
+                    System.out.println("Новая цена:");
+                    int price = scanner.nextInt();
+                    int productTypeId = vendingMachineItem.getProductTypeId();
+                    int quantity = vendingMachineItem.getQuantity();
+                    Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity);
                     done = true;
                     break;
                 }
-                switch (input) {
-                    case 1: {
-                        while (true){
-                            System.out.println("Сколько доложить?");
-                            input = scanner.nextInt();
-                            if(Facade.resupplyItemsInVendingMachine(itemRequest.itemId, input + Facade.vendingMachineItemById(itemRequest.itemId).getQuantity())) {
-                                done = true;
-                                break;
-                            }else {
-                                System.out.println("Не помещается.");
-                            };
-                        }
-
-                        break;
-                    }
-                    case 2: {
-                        System.out.println("Новая цена:");
+                case 3: {
+                    while (true) {
+                        ControllerSoutTables.soutProductTypes();
+                        System.out.println("id продукта:");
+                        int productTypeId = scanner.nextInt();
+                        System.out.println("количество");
+                        int quantity = scanner.nextInt();
+                        System.out.println("цена:");
                         int price = scanner.nextInt();
-                        int productTypeId = vendingMachineItem.getProductTypeId();
-                        int quantity = vendingMachineItem.getQuantity();
-                        Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity);
-                        done = true;
-                        break;
-                    }
-                    case 3: {
-                        while (true){
-                            ControllerSoutTables.soutProductTypes();
-                            System.out.println("id продукта:");
-                            int productTypeId = scanner.nextInt();
-                            System.out.println("количество");
-                            int quantity = scanner.nextInt();
-                            System.out.println("цена:");
-                            int price = scanner.nextInt();
-                            if(Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity)) {
-                                done = true;
-                                break;
-                            }else {
-                                System.out.println("ОШИБКА");
-                            }
+                        if (Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity)) {
+                            System.out.println("DONE");
+                            done = true;
+                            break;
+                        } else {
+                            System.out.println("ОШИБКА");
                         }
-
                     }
+
                 }
             }
 
@@ -131,7 +135,12 @@ public class Controller {
         int input;
         while (Facade.isLoggedIn()) {
             clearScreen();
+            System.out.println();
             ControllerSoutTables.soutVendingMachine();
+            System.out.println();
+            System.out.println();
+            System.out.println("Previous orders:");
+            ControllerSoutTables.soutUserOrders();
             System.out.println();
             System.out.println("Баланс: " + Facade.userMoney());
             System.out.println("1. Купить");
@@ -148,12 +157,19 @@ public class Controller {
                     break;
                 }
                 case 2: {
-                    editVendingMachineScreen();
+                    if (Facade.userIsOperator()) {
+                        editVendingMachineScreen();
+                    }
                     break;
                 }
                 case 3: {
-                    if (Facade.userIsOperator()) {
-                        continue;
+                    ControllerSoutTables.soutProductTypes();
+                    System.out.println("Название нового продука:");
+                    String name = scanner.nextLine();
+                    if(Facade.addNewProductTypeAttempt(name)){
+                        System.out.println("Продукт добавлен");
+                    }else {
+                        System.out.println("ERROR");
                     }
                     break;
                 }
@@ -219,9 +235,13 @@ public class Controller {
         return;
     }
 
-
     public static void soutVendingMachine() {
         clearScreen();
         ControllerSoutTables.soutVendingMachine();
     }
+
+    public static void saveMyMapDBToFile(){
+        Facade.saveMyMapDBToFile();
+    }
+
 }

@@ -8,6 +8,7 @@ public class Main {
         while (true){
             Controller.loginScreen();
             if(!Facade.isLoggedIn()){
+                Controller.saveMyMapDBToFile();
                 return;
             }
             Controller.mainMenu();

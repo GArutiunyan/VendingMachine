@@ -89,8 +89,7 @@ public class Repository {
 
     public static void loadMyMapDBDefaultValues() {
         userInsert("admin", "admin", 1000000000, User.UserType.OPERATOR);
-        userInsert("", "", 100000);
-        userInsert("Gena", "12345", 50000);
+        userInsert("Gena", "12345", 5000);
         productInsert("Sparkling water");
         productInsert("Sandwich");
         productInsert("Doritos");
