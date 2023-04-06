@@ -1,9 +1,7 @@
-package MyMapDB;
+package my_map_db;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MyMapDB implements Serializable {
     public static final long SerialVersionUID = -48629262342433707L;

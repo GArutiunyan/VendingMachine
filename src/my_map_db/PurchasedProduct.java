@@ -1,4 +1,4 @@
-package MyMapDB;
+package my_map_db;
 
 import java.io.Serializable;
 

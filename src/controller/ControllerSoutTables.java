@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
-import Facade.Facade;
-import MyMapDB.*;
-import Service.Service;
+import facade.Facade;
+import my_map_db.*;
+import service.Service;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package MyMapDB;
+package my_map_db;
 
 import java.io.Serializable;
 
@@ -47,11 +47,4 @@ public class VendingMachineItem implements Serializable {
         this.quantity = quantity;
     }
 
-    @Override
-    public String toString() {
-        return "id=" + id +
-                ", productTypeId=" + productTypeId +
-                ", price=" + price +
-                ", quantity=" + quantity;
-    }
 }

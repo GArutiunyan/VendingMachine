@@ -1,7 +1,10 @@
-package Repository;
+package repository;
 
-import MyMapDB.*;
-import Service.Service;
+import dtos.ProductDTO;
+import dtos.UserDTO;
+import dtos.VendingMachineItemDTO;
+import my_map_db.*;
+import service.Service;
 
 import java.io.*;
 import java.util.*;
@@ -133,4 +136,36 @@ public class Repository {
         return (Map<Integer,VendingMachineItem>)MyMapDB.vendingMachineItemTable.clone();
 
     }
+
+
+
+    public static UserDTO convertUserToDTO(User user){
+        UserDTO userDTO = new UserDTO();
+        switch (user.getUserType()){
+            case CUSTOMER -> userDTO.setUserType(UserDTO.UserType.CUSTOMER);
+            case OPERATOR -> userDTO.setUserType(UserDTO.UserType.OPERATOR);
+        }
+        userDTO.setId(user.getUserId());
+        userDTO.setMoney(user.getMoney());
+        userDTO.setUsername(user.getUserName());
+        userDTO.setPassword(user.getPassword());
+        return userDTO;
+    }
+
+    public static ProductDTO convertProductToDTO(Product product){
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        return productDTO;
+    }
+
+    public static VendingMachineItemDTO convertVendingMachineItemToDTO(VendingMachineItem vendingMachineItem){
+        VendingMachineItemDTO vendingMachineItemDTO = new VendingMachineItemDTO();
+        vendingMachineItemDTO.setPrice(vendingMachineItem.getPrice());
+        vendingMachineItemDTO.setId(vendingMachineItem.getId());
+        vendingMachineItemDTO.setProductTypeId(vendingMachineItem.getProductTypeId());
+        vendingMachineItemDTO.setQuantity(vendingMachineItem.getQuantity());
+        return vendingMachineItemDTO;
+    }
+
 }

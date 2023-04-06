@@ -1,7 +1,7 @@
-package Service;
+package service;
 
-import MyMapDB.User;
-import Repository.Repository;
+import my_map_db.User;
+import repository.Repository;
 
 public class UserService {
     public static boolean loginStatus = false;

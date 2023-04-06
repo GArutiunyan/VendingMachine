@@ -1,8 +1,8 @@
-package Service;
+package service;
 
-import MyMapDB.*;
+import my_map_db.*;
 
-import Repository.*;
+import repository.*;
 
 import java.io.File;
 import java.util.List;

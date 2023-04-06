@@ -1,14 +1,12 @@
-package Controller;
+package controller;
 
-import Facade.Facade;
-import MyMapDB.VendingMachineItem;
-import Service.Service;
-import Service.UserService;
+import facade.Facade;
+import my_map_db.VendingMachineItem;
+import service.Service;
+import service.UserService;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-import static Service.Service.stringToItemRequest;
 
 public class Controller {
 

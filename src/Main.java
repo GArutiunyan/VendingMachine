@@ -1,6 +1,5 @@
-import Controller.*;
-import Facade.Facade;
-import Service.UserService;
+import controller.*;
+import facade.Facade;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
-package Facade;
+package facade;
 
-import MyMapDB.*;
-import Repository.*;
-import Service.*;
+import my_map_db.*;
+import repository.*;
+import service.*;
 
 import java.util.List;
 import java.util.Map;
