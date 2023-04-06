@@ -10,7 +10,7 @@ import java.util.*;
 public class Repository {
 
     static {
-        MyMapDB.productTypeTable.put(-1, new Product(-1,""));
+        MyMapDB.productTypeTable.put(-1, new Product(-1,"empty slot"));
         VendingMachineItem emptySlot = new VendingMachineItem();
         for(int i = -1; i<= VendingMachineCharacteristics.getMaxIndex(); i++){
             vendingMachineItemInsert(new VendingMachineItemDTO(i,-1,0,0));

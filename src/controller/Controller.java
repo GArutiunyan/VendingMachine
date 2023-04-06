@@ -41,13 +41,13 @@ public class Controller {
         boolean done = false;
         while (!done) {
             System.out.println("Выберите ячейку");
-            System.out.println("e - отмена. Формат ввода - столбец:строка:0");
+            System.out.println("e - отмена. Формат ввода - столбец:строка");
             String stringItemRequest = scanner.nextLine();
             if (stringItemRequest.equals("e")) {
                 break;
             }
             ItemRequestDTO itemRequest = Facade.stringToItemRequestDTO(stringItemRequest);
-            if (!Facade.checkItemRequest(itemRequest)) {
+            if (!Facade.checkItemRequest(itemRequest,true)) {
                 System.out.println("ERROR");
                 continue;
             }
@@ -234,10 +234,6 @@ public class Controller {
         return;
     }
 
-    public static void soutVendingMachine() {
-        clearScreen();
-        ControllerSoutTables.soutVendingMachine();
-    }
 
     public static void saveMyMapDBToFile(){
         Facade.saveMyMapDBToFile();

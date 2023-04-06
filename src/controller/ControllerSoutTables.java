@@ -86,6 +86,10 @@ public class ControllerSoutTables {
     }
 
 
+    public static void soutVendingMachine() {
+        SoutVendingMachine.soutVendingMachine();
+    }
+
     public static class SoutVendingMachine {
 
         public static char[] frameFragments = {'╔', '═', '╗', '║', '╝', '╚', '╟', '╤', '╢', '╧', '│', '─', '┼'};
@@ -284,10 +288,5 @@ public class ControllerSoutTables {
             return "";
         }
     }
-
-    public static void soutVendingMachine() {
-        SoutVendingMachine.soutVendingMachine();
-    }
-
 
 }

@@ -33,10 +33,15 @@ public class Service {
             INVALID, OK
         }
 
-        public ItemRequest(int itemId, int quantity) {
+        public ItemRequest(Integer itemId, Integer quantity) {
             this.itemId = itemId;
             this.quantity = quantity;
             requestStatus = RequestStatus.OK;
+        }
+        public ItemRequest(Integer itemId) {
+            this.itemId = itemId;
+            this.quantity = null;
+            requestStatus = RequestStatus.INVALID;
         }
 
         public ItemRequest() {
@@ -47,13 +52,25 @@ public class Service {
     }
 
 
-    public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO){
-        if (itemRequestDTO.itemId == null || itemRequestDTO.quantity == null) {
+    public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO,boolean noQuantity){
+        VendingMachineItemDTO vendingMachineItemDTO = Service.vendingMachineItemById(itemRequestDTO.itemId);
+        if (itemRequestDTO.itemId == null) {
             System.out.println("ERROR");
             return false;
         }
-        if(itemRequestDTO.quantity<0||itemRequestDTO.itemId >VendingMachineCharacteristics.getMaxIndex()|| itemRequestDTO.itemId <VendingMachineCharacteristics.getMinIndex()){
-            System.out.println("ERROR");
+        if(noQuantity){
+            return true;
+        }
+        if(itemRequestDTO.quantity == null){
+            System.out.println("Запрос должен включать количество");
+            return false;
+        }
+        if(vendingMachineItemDTO.getProductTypeId()==-1 || vendingMachineItemDTO.getQuantity() < itemRequestDTO.quantity){
+            System.out.println("Нет продуктов");
+            return false;
+        }
+        if(vendingMachineItemDTO.getPrice() * itemRequestDTO.quantity > UserService.currentUser.getMoney()){
+            System.out.println("Недостаточно средств");
             return false;
         }
         return true;
@@ -66,11 +83,12 @@ public class Service {
         }
         int indexI = input[0].toUpperCase().charAt(0) - 'A';
         int indexJ = Integer.parseInt(input[1]);
-        int quantity = -1;
-        if (input.length > 2) {
-            quantity = Integer.parseInt(input[2]);
-        }
         int itemId = indexI * 5 + indexJ;
+        if(input.length == 2){
+            System.out.println("input length is: "+input.length);
+            return convertItemRequestToDTO(new ItemRequest(itemId));
+        }
+        int quantity = Integer.parseInt(input[2]);
         return convertItemRequestToDTO(new ItemRequest(itemId, quantity));
     }
 
@@ -90,6 +108,9 @@ public class Service {
         UserDTO userDTO = UserService.currentUser;
         vendingMachineItemDTO.setQuantity(vendingMachineItemDTO.getQuantity() - quantity);
         userDTO.setMoney(userDTO.getMoney() - quantity * vendingMachineItemDTO.getPrice());
+
+        Repository.userInsert(userDTO);
+        Repository.vendingMachineItemQuantityInsert(vendingMachineItemDTO.getId(),vendingMachineItemDTO.getQuantity());
         Repository.purchasedProductInsert(vendingMachineItemDTO.getProductTypeId(), quantity, userDTO.getId());
     }
 

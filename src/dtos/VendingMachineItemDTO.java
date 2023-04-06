@@ -1,6 +1,17 @@
 package dtos;
 
 public class VendingMachineItemDTO {
+
+    @Override
+    public String toString() {
+        return "VendingMachineItemDTO{" +
+                "id=" + id +
+                ", productTypeId=" + productTypeId +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
+
     private Integer id, productTypeId, price, quantity;
 
     public VendingMachineItemDTO() {

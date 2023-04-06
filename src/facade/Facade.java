@@ -31,8 +31,11 @@ public class Facade {
         return Service.convertItemRequestToDTO(itemRequest);
     }
 
+    public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO,boolean noQuantity){
+        return Service.checkItemRequest(itemRequestDTO, noQuantity);
+    }
     public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO){
-        return Service.checkItemRequest(itemRequestDTO);
+        return checkItemRequest(itemRequestDTO,false);
     }
 
     public static List<PurchasedProductDTO> getPurchasedProductTable(int userId) {
@@ -54,18 +57,13 @@ public class Facade {
 
     public static boolean buyAttempt(String stringItemRequest) {
         ItemRequestDTO itemRequestDTO = stringToItemRequestDTO(stringItemRequest);
-        checkItemRequest(itemRequestDTO);
-        VendingMachineItemDTO vendingMachineItemDTO = Service.vendingMachineItemById(itemRequestDTO.itemId);
-        if(vendingMachineItemDTO.getQuantity() < itemRequestDTO.quantity){
-            System.out.println("Нет продуктов");
-            return false;
-        }
-        if(vendingMachineItemDTO.getPrice() * itemRequestDTO.quantity > UserService.currentUser.getMoney()){
-            System.out.println("Недостаточно средств");
-            return false;
-        }
-        Service.buy(vendingMachineItemDTO, itemRequestDTO.quantity);
-        return true;
+        if(checkItemRequest(itemRequestDTO)){
+            VendingMachineItemDTO vendingMachineItemDTO = Service.vendingMachineItemById(itemRequestDTO.itemId);
+            System.out.println(vendingMachineItemDTO);
+            Service.buy(vendingMachineItemDTO, itemRequestDTO.quantity);
+            return true;
+        };
+        return false;
     }
 
     public static boolean userIsOperator() {
