@@ -1,10 +1,8 @@
 package repository;
 
-import dtos.ProductDTO;
-import dtos.UserDTO;
-import dtos.VendingMachineItemDTO;
 import my_map_db.*;
-import service.Service;
+
+import dtos.*;
 
 import java.io.*;
 import java.util.*;
@@ -14,9 +12,13 @@ public class Repository {
     static {
         MyMapDB.productTypeTable.put(-1, new Product(-1,""));
         VendingMachineItem emptySlot = new VendingMachineItem();
-        for(int i = -1; i<=Service.VendingMachineCharacteristics.getMaxIndex();i++){
+        for(int i = -1; i<= VendingMachineCharacteristics.getMaxIndex(); i++){
             vendingMachineItemInsert(new VendingMachineItemDTO(i,-1,0,0));
         }
+    }
+
+    public static int numberOfUsers(){
+        return MyMapDB.userTable.size();
     }
     public static void userInsert(UserDTO userDTO) {
         int recordId = userDTO.getId();
@@ -77,13 +79,6 @@ public class Repository {
         MyMapDB.purchasedProductTable.put(newRecordId, newPurchasedProduct);
     }
 
-    public static List<PurchasedProduct> getPurchasesByUserId(Integer userId) {
-        return new ArrayList<PurchasedProduct>(MyMapDB.purchasedProductTable.values().stream().filter(
-                purchasedProduct -> purchasedProduct.getUserId() == userId
-        ).toList());
-    }
-
-
     public static void saveMyMapDBToFile() {
         try (ObjectOutputStream myMapDBFile = new ObjectOutputStream(new FileOutputStream("Vending_Machine_data.dat"))) {
             myMapDBFile.writeObject(MyMapDB.userTable);
@@ -129,25 +124,34 @@ public class Repository {
         }
     }
 
-    public static List<User> getUserTable() {
-        return new ArrayList<User>(MyMapDB.userTable.values().stream().toList());
+    public static List<UserDTO> getUserTable() {
+        return new ArrayList<UserDTO>(MyMapDB.userTable.values().stream().map(Repository::convertUserToDTO).toList());
     }
 
-    public static List<Product> getProductTypeTable() {
-        return new ArrayList<Product>(MyMapDB.productTypeTable.values().stream().toList());
+    public static List<ProductDTO> getProductTypeTable() {
+        return new ArrayList<ProductDTO>(MyMapDB.productTypeTable.values().stream().map(Repository::convertProductToDTO).toList());
     }
 
-    public static Map<Integer, VendingMachineItem> getVendingMachineItemTable() {
-//        return new ArrayList<VendingMachineItem>(MyMapDB.vendingMachineItemTable.values().stream().toList());
-        return (Map<Integer,VendingMachineItem>)MyMapDB.vendingMachineItemTable.clone();
+    public static List<PurchasedProductDTO> getPurchasesByUserId(Integer userId) {
+        return new ArrayList<PurchasedProductDTO>(MyMapDB.purchasedProductTable.values().stream().filter(
+                purchasedProduct -> purchasedProduct.getUserId() == userId
+        ).map(Repository::convertPurchasedProductToDTO).toList());
+    }
 
+    public static Map<Integer, VendingMachineItemDTO> getVendingMachineItemTable() {
+        Map<Integer, VendingMachineItemDTO> vendingMachineItemDTOMap = new HashMap<Integer, VendingMachineItemDTO>();
+        MyMapDB.vendingMachineItemTable.entrySet().forEach(itemId->{
+            vendingMachineItemDTOMap.put(itemId.getKey(),convertVendingMachineItemToDTO(itemId.getValue()));
+        });
+        return vendingMachineItemDTOMap;
     }
 
 
 
     public static UserDTO convertUserToDTO(User user){
-        UserDTO userDTO = new UserDTO();
+        UserDTO userDTO = null;
         if(user!=null){
+            userDTO = new UserDTO();
             switch (user.getUserType()){
                 case CUSTOMER -> userDTO.setUserType(UserDTO.UserType.CUSTOMER);
                 case OPERATOR -> userDTO.setUserType(UserDTO.UserType.OPERATOR);
@@ -161,8 +165,9 @@ public class Repository {
     }
 
     public static ProductDTO convertProductToDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO();
+        ProductDTO productDTO = null;
         if(product!=null){
+            productDTO = new ProductDTO();
             productDTO.setId(product.getId());
             productDTO.setName(product.getName());
         }
@@ -170,14 +175,24 @@ public class Repository {
     }
 
     public static VendingMachineItemDTO convertVendingMachineItemToDTO(VendingMachineItem vendingMachineItem){
-        VendingMachineItemDTO vendingMachineItemDTO = new VendingMachineItemDTO();
+        VendingMachineItemDTO vendingMachineItemDTO = null;
         if(vendingMachineItem!=null) {
+            vendingMachineItemDTO = new VendingMachineItemDTO();
             vendingMachineItemDTO.setPrice(vendingMachineItem.getPrice());
             vendingMachineItemDTO.setId(vendingMachineItem.getId());
             vendingMachineItemDTO.setProductTypeId(vendingMachineItem.getProductTypeId());
             vendingMachineItemDTO.setQuantity(vendingMachineItem.getQuantity());
         }
         return vendingMachineItemDTO;
+    }
+
+    private static PurchasedProductDTO convertPurchasedProductToDTO(PurchasedProduct purchasedProduct) {
+        PurchasedProductDTO purchasedProductDTO = new PurchasedProductDTO();
+        purchasedProductDTO.setId(purchasedProduct.getId());
+        purchasedProductDTO.setProductTypeId(purchasedProduct.getProductTypeId());
+        purchasedProductDTO.setUserId(purchasedProduct.getUserId());
+        purchasedProductDTO.setQuantity(purchasedProduct.getQuantity());
+        return purchasedProductDTO;
     }
 
 }

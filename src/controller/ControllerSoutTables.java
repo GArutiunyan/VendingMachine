@@ -1,18 +1,18 @@
 package controller;
 
 import facade.Facade;
-import my_map_db.*;
-import service.Service;
+
+import dtos.*;
 
 import java.util.*;
 
 public class ControllerSoutTables {
     public static void soutUsers() {
-        List<User> users = Facade.getUserTable();
+        List<UserDTO> users = Facade.getUserTable();
         int usernameMaxLength = 8;
         int passwordMaxLength = 8;
-        for (User user : users) {
-            int usernameLength = user.getUserName().length();
+        for (UserDTO user : users) {
+            int usernameLength = user.getUsername().length();
             if (usernameLength > usernameMaxLength) {
                 usernameMaxLength = usernameLength;
             }
@@ -26,8 +26,8 @@ public class ControllerSoutTables {
         String format = "%" + usernameMaxLength + "s%" + passwordMaxLength + "s%9s";
         System.out.format(format, "username", "password", "type");
         System.out.println();
-        for (User user : users) {
-            System.out.format(format, user.getUserName(), user.getPassword(), user.getUserType());
+        for (UserDTO user : users) {
+            System.out.format(format, user.getUsername(), user.getPassword(), user.getUserType());
             System.out.println();
         }
 //        List<Product> products = Facade.getProductTypeTable();
@@ -36,10 +36,10 @@ public class ControllerSoutTables {
     }
 
     public static void soutProductTypes() {
-        List<Product> products = Facade.getProductTypeTable();
+        List<ProductDTO> products = Facade.getProductTypeTable();
         int nameMaxLength = 4;
         int idMaxLength = 2;
-        for (Product product : products) {
+        for (ProductDTO product : products) {
             int productNameLength = product.getName().length();
             if (productNameLength > nameMaxLength) {
                 nameMaxLength = productNameLength;
@@ -54,17 +54,17 @@ public class ControllerSoutTables {
         String format = "%" + idMaxLength + "s%" + nameMaxLength + "s";
         System.out.format(format, "id", "name");
         System.out.println();
-        for (Product product : products) {
+        for (ProductDTO product : products) {
             System.out.format(format, product.getId(), product.getName());
             System.out.println();
         }
     }
 
     public static void soutUserOrders() {
-        List<PurchasedProduct> purchasedProducts = Facade.getPurchasedProductTable(Facade.getUserId());
+        List<PurchasedProductDTO> purchasedProducts = Facade.getPurchasedProductTable(Facade.getUserId());
         int nameMaxLength = 4;
         int quantityMaxLength = 8;
-        for (PurchasedProduct purchasedProduct : purchasedProducts) {
+        for (PurchasedProductDTO purchasedProduct : purchasedProducts) {
             int productNameLength = Facade.productById(purchasedProduct.getProductTypeId()).getName().length();
             if (productNameLength > nameMaxLength) {
                 nameMaxLength = productNameLength;
@@ -79,7 +79,7 @@ public class ControllerSoutTables {
         String format = "%" + nameMaxLength + "s%" + quantityMaxLength + "s";
         System.out.format(format, "name", "quantity");
         System.out.println();
-        for (PurchasedProduct purchasedProduct : purchasedProducts) {
+        for (PurchasedProductDTO purchasedProduct : purchasedProducts) {
             System.out.format(format, Facade.productById(purchasedProduct.getProductTypeId()).getName(), purchasedProduct.getQuantity());
             System.out.println();
         }
@@ -95,23 +95,23 @@ public class ControllerSoutTables {
         public static int maxItemsInCell;
         public static int maxCellsInMachine;
 
-        static Map<Integer, VendingMachineItem> vendingMachineItems;
+        static Map<Integer, VendingMachineItemDTO> vendingMachineItems;
 
         public static void fillListsForSout() {
             maxItemWidth = new HashMap<>();
-            widthOfMachine = Service.VendingMachineCharacteristics.width;
-            heightOfMachine = Service.VendingMachineCharacteristics.height;
-            maxItemsInCell = Service.VendingMachineCharacteristics.maxItemsInSlot;
-            maxCellsInMachine = Service.VendingMachineCharacteristics.getMaxIndex();
+            widthOfMachine = VendingMachineCharacteristics.width;
+            heightOfMachine = VendingMachineCharacteristics.height;
+            maxItemsInCell = VendingMachineCharacteristics.maxItemsInSlot;
+            maxCellsInMachine = VendingMachineCharacteristics.getMaxIndex();
             vendingMachineItems = Facade.getVendingMachineItemTable();
 
             for (int indexJ = 0; indexJ < widthOfMachine; indexJ++) {
                 int maxIndexJItemWidth = 0;
                 for (int i = 1; i <= maxCellsInMachine; i += widthOfMachine) {
-                    VendingMachineItem vendingMachineItem = vendingMachineItems.get(indexJ + i);
+                    VendingMachineItemDTO vendingMachineItem = vendingMachineItems.get(indexJ + i);
                     String name = Facade.productById(vendingMachineItem.getProductTypeId()).getName();
                     String price = "" + vendingMachineItem.getPrice();
-                    String quantity = "" + vendingMachineItem.getQuantity() + "/" + Service.VendingMachineCharacteristics.maxItemsInSlot;
+                    String quantity = "" + vendingMachineItem.getQuantity() + "/" + VendingMachineCharacteristics.maxItemsInSlot;
 
                     if (maxIndexJItemWidth < name.length()) {
                         maxIndexJItemWidth = name.length();
@@ -133,8 +133,8 @@ public class ControllerSoutTables {
         static String drawFrame(int indexI, int indexJ) {
             StringBuilder result = new StringBuilder();
 
-            int width = Service.VendingMachineCharacteristics.width;
-            int height = Service.VendingMachineCharacteristics.height;
+            int width = VendingMachineCharacteristics.width;
+            int height = VendingMachineCharacteristics.height;
             if (indexI > height) {
                 if (indexJ > width) {
                     return frameFragments[4] + "";
@@ -213,7 +213,7 @@ public class ControllerSoutTables {
                         if (i > heightOfMachine && layerOfCell != LayerOfCell.FRAME) {
                             continue;
                         }
-                        VendingMachineItem vendingMachineItem;
+                        VendingMachineItemDTO vendingMachineItem;
                         int itemId = (i - 1) * widthOfMachine + j;
                         if (Facade.itemSlotIsOccupied(itemId) == Facade.ItemSlotStatus.OCCUPIED) {
                             vendingMachineItem = vendingMachineItems.get(itemId);
@@ -247,7 +247,7 @@ public class ControllerSoutTables {
             return result.toString();
         }
 
-        static String drawLayerOfCell(LayerOfCell layerOfCell, VendingMachineItem vendingMachineItem, int indexI, int indexJ) {
+        static String drawLayerOfCell(LayerOfCell layerOfCell, VendingMachineItemDTO vendingMachineItem, int indexI, int indexJ) {
 
             char frame;
             if (indexJ == 1 || indexJ > widthOfMachine) {
@@ -277,7 +277,7 @@ public class ControllerSoutTables {
                     return frame + middleAlignment(price, indexJ);
                 }
                 case QUANTITY: {
-                    String quantity = "" + vendingMachineItem.getQuantity() + "/" + Service.VendingMachineCharacteristics.maxItemsInSlot;
+                    String quantity = "" + vendingMachineItem.getQuantity() + "/" + VendingMachineCharacteristics.maxItemsInSlot;
                     return frame + middleAlignment(quantity, indexJ);
                 }
             }

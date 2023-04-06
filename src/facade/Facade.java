@@ -1,8 +1,8 @@
 package facade;
 
-import my_map_db.*;
-import repository.*;
 import service.*;
+
+import dtos.*;
 
 import java.util.List;
 import java.util.Map;
@@ -11,61 +11,65 @@ import java.util.Map;
 public class Facade {
 
 
-    public static List<User> getUserTable() {
+    public static List<UserDTO> getUserTable() {
         return Service.getUserTable();
     }
 
-    public static List<Product> getProductTypeTable() {
+    public static List<ProductDTO> getProductTypeTable() {
         return Service.getProductTypeTable();
     }
 
-    public static Map<Integer, VendingMachineItem> getVendingMachineItemTable() {
+    public static Map<Integer, VendingMachineItemDTO> getVendingMachineItemTable() {
         return Service.getVendingMachineItemTable();
     }
 
-    public static Service.ItemRequest stringToItemRequest(String stringItemRequest) {
+    public static ItemRequestDTO stringToItemRequestDTO(String stringItemRequest) {
         return Service.stringToItemRequest(stringItemRequest);
     }
 
-    public static boolean checkItemRequest(Service.ItemRequest itemRequest){
-        return Service.checkItemRequest(itemRequest);
+    public static ItemRequestDTO convertItemRequestToDTO(Service.ItemRequest itemRequest){
+        return Service.convertItemRequestToDTO(itemRequest);
     }
 
-    public static List<PurchasedProduct> getPurchasedProductTable(int userId) {
+    public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO){
+        return Service.checkItemRequest(itemRequestDTO);
+    }
+
+    public static List<PurchasedProductDTO> getPurchasedProductTable(int userId) {
         return Service.getPurchasesByUserId(userId);
     }
 
     public static int getUserId() {
-        return UserService.getCurrentUser().getUserId();
+        return UserService.getCurrentUser().getId();
     }
 
     public enum ItemSlotStatus {
         OCCUPIED, EMPTY, DOES_NOT_EXIST
     }
 
-    public static Product productById(Integer productId) {
+    public static ProductDTO productById(Integer productId) {
         return Service.productById(productId);
     }
 
 
     public static boolean buyAttempt(String stringItemRequest) {
-        Service.ItemRequest itemRequest = stringToItemRequest(stringItemRequest);
-        checkItemRequest(itemRequest);
-        VendingMachineItem vendingMachineItem = Repository.vendingMachineItemById(itemRequest.itemId);
-        if(vendingMachineItem.getQuantity() < itemRequest.quantity){
+        ItemRequestDTO itemRequestDTO = stringToItemRequestDTO(stringItemRequest);
+        checkItemRequest(itemRequestDTO);
+        VendingMachineItemDTO vendingMachineItemDTO = Service.vendingMachineItemById(itemRequestDTO.itemId);
+        if(vendingMachineItemDTO.getQuantity() < itemRequestDTO.quantity){
             System.out.println("Нет продуктов");
             return false;
         }
-        if(vendingMachineItem.getPrice() * itemRequest.quantity > UserService.currentUser.getMoney()){
+        if(vendingMachineItemDTO.getPrice() * itemRequestDTO.quantity > UserService.currentUser.getMoney()){
             System.out.println("Недостаточно средств");
             return false;
         }
-        Service.buy(vendingMachineItem, itemRequest.quantity);
+        Service.buy(vendingMachineItemDTO, itemRequestDTO.quantity);
         return true;
     }
 
     public static boolean userIsOperator() {
-        return UserService.currentUser.getUserType() == User.UserType.OPERATOR;
+        return UserService.currentUser.getUserType() == UserDTO.UserType.OPERATOR;
     }
 
     public static int userMoney() {
@@ -73,7 +77,7 @@ public class Facade {
     }
     public static boolean addItemsToVendingMachineAttempt(Integer itemId, Integer productTypeId, Integer price, Integer quantity) {
 
-        if (Service.vendingMachineItemById(itemId).getQuantity() > Service.VendingMachineCharacteristics.maxItemsInSlot) {
+        if (Service.vendingMachineItemById(itemId).getQuantity() > VendingMachineCharacteristics.maxItemsInSlot) {
             return false;
         }
         if (!userIsOperator()) {
@@ -87,19 +91,20 @@ public class Facade {
     }
 
     public static ItemSlotStatus itemSlotIsOccupied(Integer itemId) {
-        if (itemId < Service.VendingMachineCharacteristics.getMinIndex() || itemId > Service.VendingMachineCharacteristics.getMaxIndex()) {
+        if (itemId < VendingMachineCharacteristics.getMinIndex() || itemId > VendingMachineCharacteristics.getMaxIndex()) {
             return ItemSlotStatus.DOES_NOT_EXIST;
         }
-        if (Service.vendingMachineItemById(itemId) == null || Service.vendingMachineItemById(itemId).getProductTypeId()==-1) {
+        Service.vendingMachineItemById(itemId);
+        if (Service.vendingMachineItemById(itemId).getProductTypeId() == -1) {
             return ItemSlotStatus.EMPTY;
         }
         return ItemSlotStatus.OCCUPIED;
     }
 
     public static boolean resupplyItemsInVendingMachine(Integer itemId, Integer quantity) {
-        VendingMachineItem vendingMachineItem = Service.vendingMachineItemById(itemId);
-        int newQuantity = vendingMachineItem.getQuantity() + quantity;
-        if (newQuantity > Service.VendingMachineCharacteristics.maxItemsInSlot) {
+        VendingMachineItemDTO vendingMachineItemDTO = Service.vendingMachineItemById(itemId);
+        int newQuantity = vendingMachineItemDTO.getQuantity() + quantity;
+        if (newQuantity > VendingMachineCharacteristics.maxItemsInSlot) {
             return false;
         }
         if (!userIsOperator()) {
@@ -108,12 +113,12 @@ public class Facade {
         Service.vendingMachineItemQuantityInsert(itemId, newQuantity);
         return true;
     }
-    public static VendingMachineItem vendingMachineItemById(int itemId){
+    public static VendingMachineItemDTO vendingMachineItemById(int itemId){
         return Service.vendingMachineItemById(itemId);
     }
 
     public static boolean addNewProductTypeAttempt(String name) {
-        if (UserService.currentUser.getUserType() == User.UserType.OPERATOR) {
+        if (UserService.currentUser.getUserType() == UserDTO.UserType.OPERATOR) {
             Service.addNewProductType(name);
             return true;
         }
@@ -128,7 +133,7 @@ public class Facade {
         return UserService.checkLogInStatus();
     }
 
-    public static UserService.LoginAttemptResult logIn(String username, String password) {
+    public static LoginAttemptResult logIn(String username, String password) {
         return UserService.logIn(username, password);
     }
 

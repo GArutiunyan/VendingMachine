@@ -1,9 +1,10 @@
 package controller;
 
 import facade.Facade;
-import my_map_db.VendingMachineItem;
-import service.Service;
-import service.UserService;
+
+import dtos.ItemRequestDTO;
+import dtos.LoginAttemptResult;
+import dtos.VendingMachineItemDTO;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -45,12 +46,12 @@ public class Controller {
             if (stringItemRequest.equals("e")) {
                 break;
             }
-            Service.ItemRequest itemRequest = Facade.stringToItemRequest(stringItemRequest);
+            ItemRequestDTO itemRequest = Facade.stringToItemRequestDTO(stringItemRequest);
             if (!Facade.checkItemRequest(itemRequest)) {
                 System.out.println("ERROR");
                 continue;
             }
-            VendingMachineItem vendingMachineItem = Facade.vendingMachineItemById(itemRequest.itemId);
+            VendingMachineItemDTO vendingMachineItemDTO = Facade.vendingMachineItemById(itemRequest.itemId);
             //System.out.println(vendingMachineItem);
             System.out.println("Что сделать?");
             if(Facade.itemSlotIsOccupied(itemRequest.itemId)== Facade.ItemSlotStatus.OCCUPIED) {
@@ -85,8 +86,8 @@ public class Controller {
                 case 2: {
                     System.out.println("Новая цена:");
                     int price = scanner.nextInt();
-                    int productTypeId = vendingMachineItem.getProductTypeId();
-                    int quantity = vendingMachineItem.getQuantity();
+                    int productTypeId = vendingMachineItemDTO.getProductTypeId();
+                    int quantity = vendingMachineItemDTO.getQuantity();
                     Facade.addItemsToVendingMachineAttempt(itemRequest.itemId, productTypeId, price, quantity);
                     done = true;
                     break;
@@ -202,7 +203,7 @@ public class Controller {
                     String username = scanner.nextLine();
                     System.out.print("Password: ");
                     String password = scanner.nextLine();
-                    UserService.LoginAttemptResult loginAttemptResult;
+                    LoginAttemptResult loginAttemptResult;
                     loginAttemptResult = Facade.logIn(username, password);
                     clearScreen();
                     switch (loginAttemptResult) {
@@ -242,4 +243,7 @@ public class Controller {
         Facade.saveMyMapDBToFile();
     }
 
+    public static boolean isLoggedIn() {
+        return Facade.isLoggedIn();
+    }
 }
