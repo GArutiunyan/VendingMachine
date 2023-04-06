@@ -1,9 +1,20 @@
 package dtos;
 
 public class VendingMachineItemDTO {
-    private int id, productTypeId, price, quantity;
+    private Integer id, productTypeId, price, quantity;
 
     public VendingMachineItemDTO() {
+        this.id = null;
+        this.productTypeId = null;
+        this.price = null;
+        this.quantity = null;
+    }
+
+    public VendingMachineItemDTO(Integer id, Integer productTypeId, Integer price, Integer quantity) {
+        this.id = id;
+        this.productTypeId = productTypeId;
+        this.price = price;
+        this.quantity = quantity;
     }
 
     public int getId() {

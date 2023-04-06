@@ -2,7 +2,7 @@ package dtos;
 
 
 public class UserDTO {
-    private int id, money;
+    private Integer id, money;
     private String username, password;
 
     private UserType userType;
@@ -11,8 +11,19 @@ public class UserDTO {
         CUSTOMER, OPERATOR
     }
 
-    public UserDTO() {
+    public UserDTO(Integer id, Integer money, String username, String password, UserType userType) {
+        this.id = id;
+        this.money = money;
+        this.username = username;
+        this.password = password;
+        this.userType = userType;
+    }
 
+    public UserDTO() {
+        this.id = null;
+        this.money = null;
+        this.username = null;
+        this.userType = null;
     }
 
     public int getId() {
