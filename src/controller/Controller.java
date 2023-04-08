@@ -64,7 +64,6 @@ public class Controller {
             System.out.println("4. отмена");
             int input = scanner.nextInt();
             if (input == 4) {
-                done = true;
                 break;
             }
             switch (input) {
@@ -78,7 +77,6 @@ public class Controller {
                         } else {
                             System.out.println("Не помещается.");
                         }
-                        ;
                     }
 
                     break;
@@ -126,7 +124,6 @@ public class Controller {
             if (Facade.buyAttempt(stringItemRequest)) {
                 break;
             }
-            ;
         }
     }
 
@@ -215,9 +212,17 @@ public class Controller {
                     break;
                 }
                 case 2: {
-                    System.out.println("Register:");
-                    System.out.print("Username: ");
-                    String username = scanner.nextLine();
+                    String username;
+                    while (true) {
+                        System.out.println("Register:");
+                        System.out.print("Username: ");
+                        username = scanner.nextLine();
+                        if(Facade.logIn(username, "")!=LoginAttemptResult.USERNAME_DOES_NOT_EXIST){
+                            System.out.println("Username already exists.");
+                        }else {
+                            break;
+                        }
+                    }
                     System.out.print("Password: ");
                     String password = scanner.nextLine();
                     System.out.print("How much money do you have: ");
@@ -231,7 +236,6 @@ public class Controller {
                 }
             }
         }
-        return;
     }
 
 
