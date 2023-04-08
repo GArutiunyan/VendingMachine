@@ -27,10 +27,6 @@ public class Facade {
         return Service.stringToItemRequest(stringItemRequest);
     }
 
-    public static ItemRequestDTO convertItemRequestToDTO(Service.ItemRequest itemRequest){
-        return Service.convertItemRequestToDTO(itemRequest);
-    }
-
     public static boolean checkItemRequest(ItemRequestDTO itemRequestDTO,boolean noQuantity){
         return Service.checkItemRequest(itemRequestDTO, noQuantity);
     }
@@ -62,7 +58,7 @@ public class Facade {
             System.out.println(vendingMachineItemDTO);
             Service.buy(vendingMachineItemDTO, itemRequestDTO.quantity);
             return true;
-        };
+        }
         return false;
     }
 
@@ -75,7 +71,7 @@ public class Facade {
     }
     public static boolean addItemsToVendingMachineAttempt(Integer itemId, Integer productTypeId, Integer price, Integer quantity) {
 
-        if (Service.vendingMachineItemById(itemId).getQuantity() > VendingMachineCharacteristics.maxItemsInSlot) {
+        if (quantity > VendingMachineCharacteristics.maxItemsInSlot) {
             return false;
         }
         if (!userIsOperator()) {

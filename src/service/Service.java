@@ -65,6 +65,10 @@ public class Service {
             System.out.println("Запрос должен включать количество");
             return false;
         }
+        if(itemRequestDTO.quantity<0){
+            System.out.println("ы");
+            return false;
+        }
         if(vendingMachineItemDTO.getProductTypeId()==-1 || vendingMachineItemDTO.getQuantity() < itemRequestDTO.quantity){
             System.out.println("Нет продуктов");
             return false;
