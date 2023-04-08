@@ -189,7 +189,7 @@ public class ControllerSoutTables {
         }
 
         public static void soutNumberOfRows(int i, LayerOfCell layerOfCell) {
-            if (layerOfCell != LayerOfCell.NAME) {
+            if (layerOfCell != LayerOfCell.PRICE) {
                 System.out.print("   ");
                 return;
             }
